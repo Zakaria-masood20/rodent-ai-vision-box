@@ -38,7 +38,7 @@ An AI-powered rodent detection system using YOLOv5 on Raspberry Pi to monitor Wy
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/rodent-detection.git
-cd rodent-detection
+cd rodent-ai-vision-box
 
 # Run setup script
 chmod +x scripts/setup_raspberry_pi.sh
