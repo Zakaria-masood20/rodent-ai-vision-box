@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  rodent-detection:
+    build: .
+    container_name: rodent-detection
+    restart: unless-stopped
+    volumes:
+      - ./config:/app/config
+      - ./data:/app/data
+      - ./models:/app/models
+      - /mnt/wyze_sd:/mnt/wyze_sd:ro
+    env_file:
+      - .env
+    environment:
+      - TZ=America/New_York
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,29 @@
+[Unit]
+Description=Rodent AI Detection System
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/projects/rodent-ai-vision-box
+Environment="PATH=/home/pi/projects/rodent-ai-vision-box/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PYTHONPATH=/home/pi/projects/rodent-ai-vision-box"
+ExecStartPre=/bin/sleep 10
+ExecStart=/home/pi/projects/rodent-ai-vision-box/venv/bin/python /home/pi/projects/rodent-ai-vision-box/src/main.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Resource limits
+CPUQuota=80%
+MemoryMax=1G
+
+[Install]
+WantedBy=multi-user.target

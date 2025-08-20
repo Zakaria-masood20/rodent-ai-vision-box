@@ -1,0 +1,75 @@
+# Rodent Detection System Configuration
+
+# Camera Settings
+camera:
+  type: "wyze_v4"
+  source: "sd_card"  # Options: sd_card, cloud_api, rtsp
+  sd_mount_path: "/mnt/wyze_sd"
+  
+# Video Processing
+video:
+  frame_rate: 1  # Frames per second to process
+  frame_skip: 30  # Process every Nth frame
+  resize_width: 640
+  resize_height: 480
+  
+# Detection Model
+detection:
+  model_path: "models/best.pt"  # Will auto-use best.onnx if USE_ONNX=true in .env
+  confidence_threshold: 0.55
+  nms_threshold: 0.4
+  classes:
+    - "rat"
+  
+# Alert Settings
+alerts:
+  cooldown_minutes: 10
+  enabled_channels:
+    - "sms"
+    # - "email"
+    # - "push"
+  
+# Notification Services
+notifications:
+  sms:
+    provider: "twilio"
+    account_sid: "${TWILIO_ACCOUNT_SID}"
+    auth_token: "${TWILIO_AUTH_TOKEN}"
+    from_number: "${TWILIO_FROM_NUMBER}"
+    to_numbers:
+      - "${ALERT_PHONE_NUMBER}"
+  
+  email:
+    provider: "smtp"
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    use_tls: true
+    username: "${EMAIL_USERNAME}"
+    password: "${EMAIL_PASSWORD}"
+    from_email: "${FROM_EMAIL}"
+    to_emails:
+      - "${ALERT_EMAIL}"
+  
+  push:
+    provider: "pushover"
+    api_token: "${PUSHOVER_API_TOKEN}"
+    user_key: "${PUSHOVER_USER_KEY}"
+    
+# Logging
+logging:
+  level: "INFO"
+  log_file: "data/logs/rodent_detection.log"
+  max_size: "10MB"
+  backup_count: 5
+  
+# Storage
+storage:
+  images_path: "data/images"
+  database_path: "data/detections.db"
+  retention_days: 30
+  
+# System
+system:
+  startup_delay: 10  # Seconds to wait before starting
+  health_check_interval: 300  # Seconds between health checks
+  auto_restart: true
