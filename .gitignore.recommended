@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Project Specific
+data/logs/
+data/images/
+data/videos/
+data/*.db
+data/detections.db
+
+# Test outputs
+detection_results/
+detection_comparison.jpg
+test_*.jpg
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+*.pid
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Docker
+*.dockerignore
+docker-compose.override.yml
