@@ -30,12 +30,18 @@ class RodentDetectionEngine:
     def __init__(self, config):
         self.config = config
         self.model_path = config.get('detection.model_path', 'models/best.pt')
-        self.confidence_threshold = config.get('detection.confidence_threshold', 0.55)
-        self.nms_threshold = config.get('detection.nms_threshold', 0.4)
-        self.target_classes = config.get('detection.classes', ['rat'])
+        self.confidence_threshold = config.get('detection.confidence_threshold', 0.25)  # Lower for better detection
+        self.nms_threshold = config.get('detection.nms_threshold', 0.45)
+        self.target_classes = config.get('detection.classes', ['norway_rat', 'roof_rat'])
         self.device = self._get_device()
         self.use_onnx = self._should_use_onnx()
         self.model = self._load_model()
+        
+        # Model performance notes
+        self.class_performance = {
+            'norway_rat': 0.771,  # 77.1% mAP
+            'roof_rat': 0.150     # 15.0% mAP - poor accuracy
+        }
         
     def _get_device(self) -> str:
         if torch.cuda.is_available():
@@ -101,22 +107,29 @@ class RodentDetectionEngine:
                     for box in result.boxes:
                         # Get class name
                         class_id = int(box.cls)
-                        class_name = self.model.names[class_id].lower() if hasattr(self.model, 'names') else 'rat'
+                        # Map class IDs to our trained model classes
+                        class_names = {0: 'norway_rat', 1: 'roof_rat'}
+                        class_name = class_names.get(class_id, 'unknown_rat')
                         confidence = float(box.conf)
                         
-                        if self._is_rodent(class_name):
-                            # Get bbox coordinates
-                            x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
-                            bbox = (int(x1), int(y1), int(x2), int(y2))
-                            
-                            detection = Detection(
-                                class_name=class_name,
-                                confidence=confidence,
-                                bbox=bbox,
-                                timestamp=timestamp
-                            )
-                            
-                            detections.append(detection)
+                        # Always include rat detections (both classes are rats)
+                        # Get bbox coordinates
+                        x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
+                        bbox = (int(x1), int(y1), int(x2), int(y2))
+                        
+                        detection = Detection(
+                            class_name=class_name,
+                            confidence=confidence,
+                            bbox=bbox,
+                            timestamp=timestamp
+                        )
+                        
+                        detections.append(detection)
+                        
+                        # Add performance warning for roof rats
+                        if class_name == 'roof_rat':
+                            logger.info(f"Detected {class_name} with confidence {confidence:.2f} (Note: Low accuracy class)")
+                        else:
                             logger.info(f"Detected {class_name} with confidence {confidence:.2f}")
             
             return detections

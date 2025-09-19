@@ -16,10 +16,11 @@ video:
 # Detection Model
 detection:
   model_path: "models/best.pt"  # Will auto-use best.onnx if USE_ONNX=true in .env
-  confidence_threshold: 0.55
-  nms_threshold: 0.4
+  confidence_threshold: 0.25  # Lower threshold for better detection
+  nms_threshold: 0.45
   classes:
-    - "rat"
+    - "norway_rat"
+    - "roof_rat"
   
 # Alert Settings
 alerts:
