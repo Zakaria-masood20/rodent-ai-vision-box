@@ -134,7 +134,7 @@ exclude = ["dataset", "colab", "docs", "build", "dist"]
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["*/tests/*", "*/test_*.py", "*/__pycache__/*", "*/dataset/*", "*/colab/*"]
+omit = ["*/tests/*", "*/test_*.py", "*/__pycache__/*", "*/dataset/*", "*/colab/*", "*/scripts/*"]
 
 [tool.coverage.report]
 exclude_lines = [

@@ -141,21 +141,6 @@ setup-venv: ## Create and setup virtual environment
 	. $(VENV)/bin/activate && $(PIP) install -r requirements.txt
 	@echo "$(GREEN)✓ Virtual environment ready. Activate with: source $(VENV)/bin/activate$(NC)"
 
-docker-build: ## Build Docker image
-	@echo "$(YELLOW)Building Docker image...$(NC)"
-	docker build -t $(PROJECT_NAME):latest .
-	@echo "$(GREEN)✓ Docker image built$(NC)"
-
-docker-run: ## Run Docker container
-	@echo "$(YELLOW)Running Docker container...$(NC)"
-	docker run -d --name $(PROJECT_NAME) \
-		--device /dev/video0 \
-		-v $(PWD)/config:/app/config \
-		-v $(PWD)/data:/app/data \
-		--env-file .env \
-		$(PROJECT_NAME):latest
-	@echo "$(GREEN)✓ Container running$(NC)"
-
 version: ## Show version information
 	@echo "$(BLUE)Rodent AI Vision Box$(NC)"
 	@echo "Version: 1.0.0"
