@@ -1,1 +1,0 @@
-"""Test suite for Rodent AI Vision Box."""
