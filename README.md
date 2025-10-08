@@ -193,9 +193,18 @@ rodent_detection/
 └── models/                 # YOLOv5 models
 ```
 
-### Running Tests
+## 🧪 Testing
+
+### Test Components
 ```bash
-pytest tests/
+# Test email notifications
+python test_emailjs.py
+
+# Test detection on sample image
+python test_detection.py
+
+# Run all tests
+python -m pytest tests/
 ```
 
 ## License

@@ -8,6 +8,7 @@ from email.mime.image import MIMEImage
 from pathlib import Path
 from twilio.rest import Client
 import requests
+import base64
 from src.alert_engine import AlertEvent
 from src.logger import logger
 
@@ -175,6 +176,80 @@ class PushNotification(NotificationChannel):
             return False
 
 
+class EmailJSNotification(NotificationChannel):
+    def __init__(self, config: Dict):
+        self.service_id = config.get('service_id')
+        self.template_id = config.get('template_id')
+        self.public_key = config.get('public_key')
+        self.private_key = config.get('private_key')
+        self.to_email = config.get('to_email')
+        self.from_name = config.get('from_name', 'Rodent Detection System')
+        
+        if not all([self.service_id, self.template_id, self.public_key]):
+            logger.warning("EmailJS credentials not fully configured")
+    
+    async def send_alert(self, alert_event: AlertEvent) -> bool:
+        if not all([self.service_id, self.template_id, self.public_key]):
+            logger.error("EmailJS not properly configured")
+            return False
+        
+        try:
+            detection = alert_event.detection
+            
+            # Prepare image data if available
+            image_data = None
+            if Path(alert_event.image_path).exists():
+                with open(alert_event.image_path, 'rb') as f:
+                    image_data = base64.b64encode(f.read()).decode('utf-8')
+            
+            # Prepare template parameters
+            template_params = {
+                'to_email': self.to_email,
+                'from_name': self.from_name,
+                'rodent_type': detection.class_name.replace('_', ' ').title(),
+                'detection_time': detection.datetime.strftime('%Y-%m-%d %I:%M:%S %p'),
+                'confidence': f"{detection.confidence:.0%}",
+                'message': f"🚨 RODENT ALERT! {detection.class_name.replace('_', ' ').title()} detected at {detection.datetime.strftime('%I:%M %p')} with {detection.confidence:.0%} confidence.",
+                'image_data': image_data if image_data else '',
+                'image_name': Path(alert_event.image_path).name if image_data else ''
+            }
+            
+            # Send via EmailJS API with browser-like headers
+            headers = {
+                'Content-Type': 'application/json',
+                'Origin': 'http://localhost:3000',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
+            
+            data = {
+                'service_id': self.service_id,
+                'template_id': self.template_id,
+                'user_id': self.public_key,
+                'template_params': template_params
+            }
+            
+            # Add private key if available (for additional security)
+            if self.private_key:
+                data['accessToken'] = self.private_key
+            
+            response = requests.post(
+                'https://api.emailjs.com/api/v1.0/email/send',
+                headers=headers,
+                json=data
+            )
+            
+            if response.status_code == 200:
+                logger.info(f"EmailJS notification sent successfully to {self.to_email}")
+                return True
+            else:
+                logger.error(f"EmailJS notification failed: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"EmailJS notification failed: {e}")
+            return False
+
+
 class NotificationService:
     def __init__(self, config):
         self.config = config
@@ -195,6 +270,12 @@ class NotificationService:
             if email_config:
                 channels['email'] = EmailNotification(email_config)
                 logger.info("Email notification channel initialized")
+        
+        if 'emailjs' in enabled_channels:
+            emailjs_config = self.config.get('notifications.emailjs', {})
+            if emailjs_config:
+                channels['emailjs'] = EmailJSNotification(emailjs_config)
+                logger.info("EmailJS notification channel initialized")
         
         if 'push' in enabled_channels:
             push_config = self.config.get('notifications.push', {})

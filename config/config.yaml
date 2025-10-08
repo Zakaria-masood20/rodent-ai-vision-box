@@ -26,8 +26,9 @@ detection:
 alerts:
   cooldown_minutes: 10
   enabled_channels:
-    - "sms"
-    # - "email"
+    # - "sms"  # Twilio SMS (disabled due to toll-free verification issues)
+    - "emailjs"  # EmailJS for email notifications (no SMTP server needed)
+    # - "email"  # Traditional SMTP email
     # - "push"
   
 # Notification Services
@@ -55,6 +56,14 @@ notifications:
     provider: "pushover"
     api_token: "${PUSHOVER_API_TOKEN}"
     user_key: "${PUSHOVER_USER_KEY}"
+  
+  emailjs:
+    service_id: "${EMAILJS_SERVICE_ID}"
+    template_id: "${EMAILJS_TEMPLATE_ID}"
+    public_key: "${EMAILJS_PUBLIC_KEY}"
+    private_key: "${EMAILJS_PRIVATE_KEY}"
+    to_email: "${EMAILJS_TO_EMAIL}"
+    from_name: "Rodent Detection System"
     
 # Logging
 logging:
