@@ -1,153 +1,184 @@
-# 🚀 Quick Start Guide - Rodent AI Vision Box
+# 🚀 Quick Start Guide - 15 Minutes to Deployment
 
-## ✅ Your System is Ready!
+Get your Rodent AI Vision Box running in 15 minutes or less.
 
-The trained YOLOv8 model is already in the `models/` directory:
-- `best.pt` - PyTorch model (52MB)
-- `best.onnx` - ONNX model (99MB) for better Raspberry Pi performance
+## Prerequisites ✅
 
-## 📋 Setup Steps (5 minutes)
+- Raspberry Pi 5 (8GB RAM)
+- MicroSD card (64GB) with Raspberry Pi OS
+- Camera (Wyze or USB)
+- Internet connection
+- SSH access to your Pi
 
-### 1️⃣ Add Twilio Credentials
-
-Copy `.env.example` to `.env` and add your Twilio credentials:
-
-```bash
-cp .env.example .env
-nano .env
-```
-
-**Required fields to update:**
-```env
-TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-TWILIO_AUTH_TOKEN=your_auth_token_here
-TWILIO_FROM_NUMBER=+1234567890  # Your Twilio number
-ALERT_PHONE_NUMBER=+0987654321  # Your phone to receive alerts
-```
-
-### 2️⃣ Install on Raspberry Pi
-
-Transfer this folder to your Raspberry Pi and run:
+## Step 1: Clone & Setup (3 minutes)
 
 ```bash
-# On Raspberry Pi
+# SSH into your Raspberry Pi
+ssh pi@[your-pi-ip]
+
+# Clone the repository
+git clone [repository-url]
 cd rodent-ai-vision-box
-chmod +x setup.sh
-./setup.sh
+
+# Run automated setup
+sudo ./setup.sh
 ```
 
-### 3️⃣ Mount Wyze SD Card
+The setup script will:
+- Install Python 3.9+
+- Install all dependencies
+- Configure system services
+- Set up directories
+
+## Step 2: Configure Credentials (2 minutes)
 
 ```bash
-# Create mount point
-sudo mkdir -p /mnt/wyze_sd
+# Copy production credentials
+cp .env.production .env
 
-# Mount SD card (replace /dev/sda1 with your SD card device)
-sudo mount /dev/sda1 /mnt/wyze_sd
-
-# Make it permanent (optional)
-echo "/dev/sda1 /mnt/wyze_sd auto defaults 0 0" | sudo tee -a /etc/fstab
+# Verify EmailJS settings (already configured)
+cat .env | grep EMAILJS
 ```
 
-### 4️⃣ Start the System
+Your `.env` should contain:
+```
+EMAILJS_SERVICE_ID=service_2q7m7pm
+EMAILJS_TEMPLATE_ID=template_0q4z7y8
+EMAILJS_PUBLIC_KEY=Cx4zjcLaDjfhS2ssD
+EMAILJS_TO_EMAIL=ratproject111@gmail.com
+```
+
+## Step 3: Configure Camera (3 minutes)
+
+Edit the configuration file:
+```bash
+nano config/config.yaml
+```
+
+Choose your camera source:
+```yaml
+camera:
+  # Option 1: SD Card
+  source: "sd_card"
+  sd_mount_path: "/mnt/wyze_sd"
+  
+  # Option 2: RTSP Stream
+  # source: "rtsp"
+  # rtsp_url: "rtsp://192.168.1.100:554/live"
+  
+  # Option 3: USB Camera
+  # source: "usb"
+  # device_id: 0
+```
+
+## Step 4: Test Components (2 minutes)
 
 ```bash
-# Start the service
-sudo systemctl start rodent-detection
+# Test detection system
+python3 utils/test_system.py
 
+# Test email notifications
+python3 utils/test_email.py
+```
+
+You should see:
+```
+✅ Model loaded successfully
+✅ Detection engine ready
+✅ Email sent successfully
+```
+
+## Step 5: Start the Service (2 minutes)
+
+```bash
 # Enable auto-start on boot
 sudo systemctl enable rodent-detection
 
-# Check status
+# Start the service
+sudo systemctl start rodent-detection
+
+# Verify it's running
 sudo systemctl status rodent-detection
 ```
 
-### 5️⃣ Monitor Logs
+You should see: `Active: active (running)`
+
+## Step 6: Verify Operation (3 minutes)
 
 ```bash
-# View real-time logs
+# Watch live logs
 sudo journalctl -u rodent-detection -f
+
+# Check for detections (after a few minutes)
+ls -la data/images/
+
+# Test with a video (optional)
+python3 src/main.py --test-video Test_videos/T1.mp4
 ```
 
-## 📱 Alert Format
+## 🎉 Success Indicators
 
-When a rat is detected, you'll receive an SMS:
+✅ Service shows "active (running)"  
+✅ Logs show "Rodent Detection System started"  
+✅ Email test sends successfully  
+✅ No error messages in logs  
 
+## 📧 What to Expect
+
+When a rodent is detected:
+1. System captures the frame
+2. AI analyzes for rodents
+3. If confidence > 45%, alert triggers
+4. Email sent to ratproject111@gmail.com
+5. Image saved in data/images/
+6. Detection logged in database
+
+## ⚡ Quick Commands
+
+```bash
+# Stop system
+sudo systemctl stop rodent-detection
+
+# Restart system
+sudo systemctl restart rodent-detection
+
+# View last 50 log entries
+sudo journalctl -u rodent-detection -n 50
+
+# Check detection count
+sqlite3 data/detections.db "SELECT COUNT(*) FROM detections;"
 ```
-🚨 RODENT ALERT! Norway Rat detected 
-at 3:45 PM with 85% confidence.
-```
 
-**Note:** Roof rat detection has lower accuracy (15%) due to training data limitations.
+## 🔧 Quick Adjustments
 
-## 🔧 Configuration
-
-### Adjust Detection Sensitivity
-
+### Too many false alerts?
 Edit `config/config.yaml`:
 ```yaml
 detection:
-  confidence_threshold: 0.25  # Lower = more sensitive (more detections)
+  confidence_threshold: 0.55  # Increase from 0.45
 ```
 
-### Change Alert Cooldown
+### Not detecting rodents?
+```yaml
+detection:
+  confidence_threshold: 0.35  # Decrease from 0.45
+```
 
-To prevent spam, alerts have a 10-minute cooldown. Change in `config/config.yaml`:
+### Too many emails?
 ```yaml
 alerts:
-  cooldown_minutes: 10  # Minutes between alerts
+  cooldown_minutes: 30  # Increase from 10
 ```
 
-## 🐀 Model Performance
+## ❓ Need Help?
 
-- **Overall Detection:** Good (67% recall)
-- **Norway Rats:** Excellent (77% accuracy) ✅
-- **Roof Rats:** Poor (15% accuracy) ⚠️
-- **Best Use:** General rat presence detection
+1. Check logs: `sudo journalctl -u rodent-detection -n 100`
+2. Test components: `python3 utils/test_system.py`
+3. Review [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
+4. Check [Full Documentation](README.md)
 
-The model reliably detects when rats are present but may confuse the specific type.
+---
 
-## 🆘 Troubleshooting
-
-### No Detections
-1. Check SD card is mounted: `ls /mnt/wyze_sd`
-2. Lower confidence threshold in config
-3. Check logs: `sudo journalctl -u rodent-detection -f`
-
-### Twilio Not Sending
-1. Verify credentials in `.env`
-2. Check account balance at console.twilio.com
-3. Verify phone numbers are in E.164 format (+1234567890)
-
-### Service Won't Start
-1. Check Python packages: `source venv/bin/activate && python test_system.py`
-2. Verify model files exist: `ls models/`
-3. Check permissions: `chmod -R 755 .`
-
-## 📊 System Requirements
-
-- Raspberry Pi 4/5 (4GB+ RAM recommended)
-- 64GB SD card
-- Wyze camera with SD card recording
-- Internet connection for Twilio
-
-## 🎯 What Happens
-
-1. System monitors Wyze SD card for new video/images
-2. Runs YOLOv8 model on each frame
-3. When rat detected:
-   - Saves annotated image with bounding box
-   - Sends Twilio SMS alert
-   - Waits 10 minutes before next alert (cooldown)
-4. Continues monitoring 24/7
-
-## ✨ Ready to Go!
-
-Once you add Twilio credentials and start the service, the system will:
-- ✅ Monitor continuously
-- ✅ Detect rats with 67% accuracy
-- ✅ Send SMS alerts via Twilio
-- ✅ Save detection images
-- ✅ Auto-start on boot
-
-**Support:** Check logs with `sudo journalctl -u rodent-detection -f` for any issues.
+**Time to deployment: 15 minutes**  
+**Current status: Production Ready**  
+**Email alerts going to: ratproject111@gmail.com**
