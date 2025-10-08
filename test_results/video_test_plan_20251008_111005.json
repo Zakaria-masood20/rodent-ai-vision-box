@@ -1,0 +1,36 @@
+{
+  "test_date": "2025-10-08T11:10:05.550497",
+  "model": "best.onnx",
+  "videos": [
+    {
+      "name": "T1.mp4",
+      "size_mb": 4.383867263793945,
+      "status": "ready_to_test",
+      "expected_output": "detection_frames/*.jpg"
+    },
+    {
+      "name": "T2.mp4",
+      "size_mb": 1.7614250183105469,
+      "status": "ready_to_test",
+      "expected_output": "detection_frames/*.jpg"
+    },
+    {
+      "name": "T3.mp4",
+      "size_mb": 5.755614280700684,
+      "status": "ready_to_test",
+      "expected_output": "detection_frames/*.jpg"
+    },
+    {
+      "name": "T4.mp4",
+      "size_mb": 5.057430267333984,
+      "status": "ready_to_test",
+      "expected_output": "detection_frames/*.jpg"
+    },
+    {
+      "name": "T5.mp4",
+      "size_mb": 8.985010147094727,
+      "status": "ready_to_test",
+      "expected_output": "detection_frames/*.jpg"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "dependencies": {
+    "cv2": "\u274c Not installed",
+    "numpy": "\u274c Not installed",
+    "PIL": "\u274c Not installed",
+    "torch": "\u274c Not installed",
+    "yaml": "\u274c Not installed"
+  },
+  "videos": {
+    "test_date": "2025-10-08T11:05:34.541539",
+    "videos": [
+      {
+        "name": "T1.mp4",
+        "path": "/Users/zakariamasoodgosign/Documents/zakaria/Freelance/RAT_Project/Test_videos/T1.mp4",
+        "size_mb": 4.38,
+        "exists": true
+      },
+      {
+        "name": "T2.mp4",
+        "path": "/Users/zakariamasoodgosign/Documents/zakaria/Freelance/RAT_Project/Test_videos/T2.mp4",
+        "size_mb": 1.76,
+        "exists": true
+      },
+      {
+        "name": "T3.mp4",
+        "path": "/Users/zakariamasoodgosign/Documents/zakaria/Freelance/RAT_Project/Test_videos/T3.mp4",
+        "size_mb": 5.76,
+        "exists": true
+      },
+      {
+        "name": "T4.mp4",
+        "path": "/Users/zakariamasoodgosign/Documents/zakaria/Freelance/RAT_Project/Test_videos/T4.mp4",
+        "size_mb": 5.06,
+        "exists": true
+      },
+      {
+        "name": "T5.mp4",
+        "path": "/Users/zakariamasoodgosign/Documents/zakaria/Freelance/RAT_Project/Test_videos/T5.mp4",
+        "size_mb": 8.99,
+        "exists": true
+      }
+    ]
+  },
+  "model_exists": true,
+  "test_plan": {
+    "created": "2025-10-08T11:05:34.541936",
+    "test_scenarios": [
+      {
+        "video": "T1.mp4",
+        "description": "Test video 1 - 4.6 MB",
+        "expected_checks": [
+          "Video loads successfully",
+          "Detection engine processes frames",
+          "Any rodents detected are logged",
+          "Output frames are saved"
+        ]
+      },
+      {
+        "video": "T2.mp4",
+        "description": "Test video 2 - 1.8 MB",
+        "expected_checks": [
+          "Video loads successfully",
+          "Detection engine processes frames",
+          "Any rodents detected are logged",
+          "Output frames are saved"
+        ]
+      },
+      {
+        "video": "T3.mp4",
+        "description": "Test video 3 - 6.0 MB",
+        "expected_checks": [
+          "Video loads successfully",
+          "Detection engine processes frames",
+          "Any rodents detected are logged",
+          "Output frames are saved"
+        ]
+      },
+      {
+        "video": "T4.mp4",
+        "description": "Test video 4 - 5.3 MB",
+        "expected_checks": [
+          "Video loads successfully",
+          "Detection engine processes frames",
+          "Any rodents detected are logged",
+          "Output frames are saved"
+        ]
+      },
+      {
+        "video": "T5.mp4",
+        "description": "Test video 5 - 9.4 MB (largest)",
+        "expected_checks": [
+          "Video loads successfully",
+          "Detection engine processes frames",
+          "Any rodents detected are logged",
+          "Output frames are saved"
+        ]
+      }
+    ],
+    "testing_steps": [
+      "1. Check all dependencies are installed",
+      "2. Verify model file exists (best.onnx)",
+      "3. Load each video file",
+      "4. Process frames through detection engine",
+      "5. Log any detections found",
+      "6. Save annotated frames with bounding boxes",
+      "7. Generate summary report"
+    ],
+    "expected_outputs": [
+      "test_results/ directory with timestamped folders",
+      "Detection frames saved as images",
+      "JSON report with detection statistics",
+      "HTML report for easy viewing"
+    ]
+  }
+}

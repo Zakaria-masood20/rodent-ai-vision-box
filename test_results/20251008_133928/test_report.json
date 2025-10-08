@@ -1,0 +1,75 @@
+{
+  "summary": {
+    "test_date": "2025-10-08T13:39:29.091155",
+    "total_videos": 5,
+    "total_detections": 0,
+    "all_detections_by_class": {}
+  },
+  "video_results": [
+    {
+      "video": "T1.mp4",
+      "resolution": "848x480",
+      "fps": 14.124542124542124,
+      "total_frames": 482,
+      "frames_processed": 69,
+      "frames_with_detections": 0,
+      "total_detections": 0,
+      "detections_by_class": {},
+      "detection_frames": [],
+      "processing_time": 29.826799154281616,
+      "processing_fps": 2.3133558395955167
+    },
+    {
+      "video": "T2.mp4",
+      "resolution": "480x848",
+      "fps": 26.27173213135866,
+      "total_frames": 272,
+      "frames_processed": 21,
+      "frames_with_detections": 0,
+      "total_detections": 0,
+      "detections_by_class": {},
+      "detection_frames": [],
+      "processing_time": 10.158134937286377,
+      "processing_fps": 2.0673086279763377
+    },
+    {
+      "video": "T3.mp4",
+      "resolution": "848x480",
+      "fps": 14.9816263073589,
+      "total_frames": 530,
+      "frames_processed": 76,
+      "frames_with_detections": 0,
+      "total_detections": 0,
+      "detections_by_class": {},
+      "detection_frames": [],
+      "processing_time": 39.03675699234009,
+      "processing_fps": 1.9468830367981889
+    },
+    {
+      "video": "T4.mp4",
+      "resolution": "848x480",
+      "fps": 14.959245644877736,
+      "total_frames": 468,
+      "frames_processed": 67,
+      "frames_with_detections": 0,
+      "total_detections": 0,
+      "detections_by_class": {},
+      "detection_frames": [],
+      "processing_time": 36.647608041763306,
+      "processing_fps": 1.8282230022665427
+    },
+    {
+      "video": "T5.mp4",
+      "resolution": "848x480",
+      "fps": 14.505986734430184,
+      "total_frames": 842,
+      "frames_processed": 121,
+      "frames_with_detections": 0,
+      "total_detections": 0,
+      "detections_by_class": {},
+      "detection_frames": [],
+      "processing_time": 63.33043384552002,
+      "processing_fps": 1.910613786337728
+    }
+  ]
+}
