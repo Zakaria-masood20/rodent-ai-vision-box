@@ -13,11 +13,11 @@ You should have:
 
 ---
 
-## 🔌 What You Need to Provide
+## 🔌 What You Need
 
-- [ ] **Raspberry Pi 5** (small computer, looks like a credit card)
-- [ ] **Power adapter** for Raspberry Pi (USB-C, like a phone charger but stronger)
-- [ ] **Wyze v4 Camera** (you probably already have this)
+- [ ] **Raspberry Pi 5**
+- [ ] **Power adapter** for Raspberry Pi (USB-C)
+- [ ] **Wyze v4 Camera**
 - [ ] **USB SD Card Reader** (to connect Wyze camera's SD card to Raspberry Pi)
 - [ ] **Internet connection** (WiFi or Ethernet cable)
 

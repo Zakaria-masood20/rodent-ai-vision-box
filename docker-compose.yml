@@ -1,0 +1,11 @@
+services:
+  wyze-bridge:
+    image: mrlt8/wyze-bridge:latest
+    container_name: wyze-bridge
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8554:8554" # RTSP streams
+      - "8888:8888" # Web UI
+      - "5001:5000" # API

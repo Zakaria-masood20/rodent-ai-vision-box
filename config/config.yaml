@@ -2,9 +2,9 @@
 
 # Camera Settings
 camera:
-  type: "wyze_v4"
-  source: "sd_card"  # Options: sd_card, cloud_api, rtsp
-  sd_mount_path: "/mnt/wyze_sd"
+  source: "wyze_bridge"  # Options: sd_card, rtsp, wyze_bridge, local
+  bridge_url: "http://localhost:8888"
+  camera_name: "living room"  # Exact name from Wyze app
   
 # Video Processing
 video:
