@@ -6,7 +6,13 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from pathlib import Path
-from twilio.rest import Client
+# Twilio is optional - only import if available
+try:
+    from twilio.rest import Client
+    TWILIO_AVAILABLE = True
+except ImportError:
+    TWILIO_AVAILABLE = False
+    Client = None
 import requests
 import base64
 from src.alert_engine import AlertEvent
@@ -26,7 +32,10 @@ class SMSNotification(NotificationChannel):
         self.from_number = config.get('from_number')
         self.to_numbers = config.get('to_numbers', [])
         
-        if self.account_sid and self.auth_token:
+        if not TWILIO_AVAILABLE:
+            logger.warning("Twilio not installed - SMS notifications disabled")
+            self.client = None
+        elif self.account_sid and self.auth_token:
             self.client = Client(self.account_sid, self.auth_token)
         else:
             logger.warning("Twilio credentials not configured")
@@ -196,11 +205,33 @@ class EmailJSNotification(NotificationChannel):
         try:
             detection = alert_event.detection
             
-            # Prepare image data if available
+            # Prepare compressed image data if available (EmailJS has 50KB limit)
             image_data = None
             if Path(alert_event.image_path).exists():
-                with open(alert_event.image_path, 'rb') as f:
-                    image_data = base64.b64encode(f.read()).decode('utf-8')
+                try:
+                    import cv2
+                    img = cv2.imread(alert_event.image_path)
+                    
+                    # Resize to max 400px width to reduce size
+                    max_width = 400
+                    height, width = img.shape[:2]
+                    if width > max_width:
+                        ratio = max_width / width
+                        new_size = (max_width, int(height * ratio))
+                        img = cv2.resize(img, new_size)
+                    
+                    # Compress as JPEG with low quality
+                    encode_params = [cv2.IMWRITE_JPEG_QUALITY, 30]
+                    _, buffer = cv2.imencode('.jpg', img, encode_params)
+                    image_data = base64.b64encode(buffer).decode('utf-8')
+                    
+                    # Check if still too large (>40KB to be safe)
+                    if len(image_data) > 40000:
+                        logger.warning("Image still too large for EmailJS, sending without image")
+                        image_data = None
+                except Exception as e:
+                    logger.warning(f"Could not compress image: {e}")
+                    image_data = None
             
             # Prepare template parameters
             template_params = {

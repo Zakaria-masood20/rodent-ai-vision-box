@@ -2,21 +2,24 @@
 
 # Camera Settings
 camera:
-  source: "wyze_bridge"  # Options: sd_card, rtsp, wyze_bridge, local
-  bridge_url: "http://localhost:8888"
-  camera_name: "living room"  # Exact name from Wyze app
+  source: "local"  # Options: sd_card, rtsp, wyze_bridge, local
+  local_video_path: "/Users/zakariamasoodgosign/Documents/zakaria/Freelance/RAT_Project/Test_videos/T1.mp4"
+  # Use these for production with Wyze Bridge:
+  # source: "wyze_bridge"
+  # bridge_url: "http://localhost:8888"
+  # camera_name: "living room"
   
 # Video Processing
 video:
   frame_rate: 1  # Frames per second to process
-  frame_skip: 30  # Process every Nth frame
+  frame_skip: 5  # Process every Nth frame (lower = more frames analyzed)
   resize_width: 640
   resize_height: 480
   
 # Detection Model
 detection:
   model_path: "models/best.pt"  # Will auto-use best.onnx if USE_ONNX=true in .env
-  confidence_threshold: 0.25  # Lower threshold for better detection
+  confidence_threshold: 0.15  # Lower threshold for better detection
   nms_threshold: 0.45
   classes:
     - "norway_rat"

@@ -208,3 +208,19 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ===========================================
+# Project-specific ignores
+# ===========================================
+# Detection images (generated at runtime)
+data/images/
+data/images/*.jpg
+data/images/*.png
+
+# Log files
+data/logs/
+data/logs/*.log
+*.log
+
+# SQLite database (optional - uncomment if you want to ignore)
+data/detections.db

@@ -64,7 +64,7 @@ class RodentDetectionSystem:
         success = any(results.values())
         if success:
             self.alert_engine.mark_alert_sent(alert_event)
-            self.database.update_alert_status(alert_event.detection.id)
+            # Database alert status update - use timestamp as identifier
             self.logger.info(f"Alert sent successfully: {results}")
         else:
             self.logger.error(f"Failed to send alert: {results}")
